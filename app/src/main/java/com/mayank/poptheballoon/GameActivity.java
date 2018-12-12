@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davidgassner.android.balloonpopper.R;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
@@ -66,7 +65,7 @@ public class GameActivity extends Activity implements Balloon.BalloonListener,
 //===============================================AdMob===========================================
     private AdView mBannerAdView;
     private InterstitialAd mInterstitialAd;
-    private boolean mInterstitialAdShowing = false;
+    private boolean mClose = false;
     private RewardedVideoAd mRewardedVideoAd;
 
     @Override
@@ -178,24 +177,6 @@ public class GameActivity extends Activity implements Balloon.BalloonListener,
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-        mInterstitialAd.setAdListener(new AdListener(){
-            @Override
-            public void onAdOpened() {
-                mInterstitialAdShowing = true;
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                mInterstitialAdShowing = false;
-            }
-
-            @Override
-            public void onAdClosed() {
-                mInterstitialAdShowing = false;
-            }
-
-        });
-
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         mRewardedVideoAd.setRewardedVideoAdListener(this);
         loadRewardedVideoAd();
@@ -203,7 +184,7 @@ public class GameActivity extends Activity implements Balloon.BalloonListener,
 
     @Override
     public void onBackPressed() {
-        if(!mInterstitialAdShowing) {
+        if(!mClose) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setMessage("Do you Really want to Exit?").
@@ -216,14 +197,17 @@ public class GameActivity extends Activity implements Balloon.BalloonListener,
                                 Log.d("TAG", "The interstitial wasn't loaded yet.");
                             }
                             stopGame();
+                            finish();
                         }
                     }).setNegativeButton("Cancel", null).show();
+            mClose = true;
         } else
             super.onBackPressed();
     }
 
     @Override
     public void onResume() {
+        mClose = false;
         mRewardedVideoAd.resume(this);
         mSoundHelper.playMusic();
         super.onResume();
