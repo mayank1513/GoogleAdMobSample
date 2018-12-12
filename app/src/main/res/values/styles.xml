@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.NoActionBar"/>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/holo_blue_light</item>
+        <item name="android:textColor">#C6000000</item>
+    </style>
+
+</resources>
